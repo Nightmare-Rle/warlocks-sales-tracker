@@ -1,4 +1,4 @@
-# Warlocks Sales Tracker
+# Warlocks Sales Tracker(STILL IN PROGRESS/CAN BE MODIFIED)
 
 [![Python 3.12+](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)](https://python.org)
 [![Electron](https://img.shields.io/badge/Electron-28-47848F?logo=electron&logoColor=white)](#)
