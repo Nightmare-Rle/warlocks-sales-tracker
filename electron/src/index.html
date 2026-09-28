@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .card h2 {
+            color: #333;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+            font-size: 1.3rem;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 100%;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(245, 87, 108, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 172, 254, 0.4);
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 0.85rem;
+            width: auto;
+            margin: 2px;
+        }
+
+        .product-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .product-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .product-item h3 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .product-item p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .product-actions {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .calculator {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .calc-btn {
+            padding: 15px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .calc-btn-number {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .calc-btn-number:hover {
+            background: #e0e0e0;
+        }
+
+        .calc-btn-operator {
+            background: #667eea;
+            color: white;
+        }
+
+        .calc-btn-operator:hover {
+            background: #5a6fd6;
+        }
+
+        .calc-btn-equals {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            grid-column: span 2;
+        }
+
+        .calc-btn-clear {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .calc-display {
+            grid-column: span 4;
+            padding: 20px;
+            text-align: right;
+            font-size: 1.8rem;
+            background: #333;
+            color: white;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            word-break: break-all;
+        }
+
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .quantity-btn {
+            width: 40px;
+            height: 40px;
+            font-size: 1.5rem;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .quantity-btn-minus {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+
+        .quantity-btn-plus {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+
+        .quantity-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .quantity-display {
+            font-size: 1.5rem;
+            font-weight: bold;
+            min-width: 50px;
+            text-align: center;
+            color: #333;
+        }
+
+        .sales-summary {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #667eea;
+        }
+
+        .selected-product {
+            background: linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .selected-product h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .total-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .total-amount {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px;
+            color: #999;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .modal-content h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-actions .btn {
+            flex: 1;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .toolbar .btn {
+            width: auto;
+            margin-top: 0;
+            padding: 10px 20px;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+            color: #333;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(168, 237, 234, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Sales Tracker</h1>
+        
+        <div class="toolbar">
+            <button class="btn btn-secondary" onclick="saveToFile()">Save Data</button>
+            <button class="btn btn-secondary" onclick="loadFromFile()">Load Data</button>
+            <button class="btn btn-secondary" onclick="exportToCSV()">Export CSV</button>
+        </div>
+        
+        <div class="grid">
+            <!-- Add Product Card -->
+            <div class="card">
+                <h2>Add New Product</h2>
+                <div class="form-group">
+                    <label for="productName">Product Name</label>
+                    <input type="text" id="productName" placeholder="Enter product name">
+                </div>
+                <div class="form-group">
+                    <label for="productPrice">Price ($)</label>
+                    <input type="number" id="productPrice" step="0.01" min="0" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="productCategory">Category</label>
+                    <input type="text" id="productCategory" placeholder="e.g., Electronics, Food">
+                </div>
+                <button class="btn btn-primary" onclick="addProduct()">Add Product</button>
+            </div>
+
+            <!-- Product List Card -->
+            <div class="card">
+                <h2>Available Products</h2>
+                <div class="product-list" id="productList">
+                    <div class="empty-state">
+                        <div>&#128230;</div>
+                        <p>No products yet. Add your first product above!</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Calculator Card -->
+            <div class="card">
+                <h2>Calculator</h2>
+                <div class="calculator">
+                    <div class="calc-display" id="calcDisplay">0</div>
+                    <button class="calc-btn calc-btn-clear" onclick="clearCalc()">C</button>
+                    <button class="calc-btn calc-btn-operator" onclick="appendToCalc('(')">(</button>
+                    <button class="calc-btn calc-btn-operator" onclick="appendToCalc(')')">)</button>
+                    <button class="calc-btn calc-btn-operator" onclick="appendToCalc('/')">÷</button>
+                    <button class="calc-btn calc-btn-number" onclick="appendToCalc('7')">7</button>
+                    <button class="calc-btn calc-btn-number" onclick="appendToCalc('8')">8</button>
+                    <button class="calc-btn calc-btn-number" onclick="appendToCalc('9')">9</button>
+                    <button class="calc-btn calc-btn-operator" onclick="appendToCalc('*')">×</button>
+                    <button class="calc-btn calc-btn-number" onclick="appendToCalc('4')">4</button>
+                    <button class="calc-btn calc-btn-number" onclick="appendToCalc('5')">5</button>
+                    <button class="calc-btn calc-btn-number" onclick="appendToCalc('6')">6</button>
+                    <button class="calc-btn calc-btn-operator" onclick="appendToCalc('-')">−</button>
+                    <button class="calc-btn calc-btn-number" onclick="appendToCalc('1')">1</button>
+                    <button class="calc-btn calc-btn-number" onclick="appendToCalc('2')">2</button>
+                    <button class="calc-btn calc-btn-number" onclick="appendToCalc('3')">3</button>
+                    <button class="calc-btn calc-btn-operator" onclick="appendToCalc('+')">+</button>
+                    <button class="calc-btn calc-btn-number" onclick="appendToCalc('0')">0</button>
+                    <button class="calc-btn calc-btn-number" onclick="appendToCalc('.')">.</button>
+                    <button class="calc-btn calc-btn-equals" onclick="calculate()">=</button>
+                </div>
+            </div>
+
+            <!-- Sales Tracker Card -->
+            <div class="card">
+                <h2>Sales Tracker</h2>
+                <div class="form-group">
+                    <label>Select Product to Sell</label>
+                    <select id="productSelect" onchange="selectProduct()">
+                        <option value="">Choose a product...</option>
+                    </select>
+                </div>
+                
+                <div class="selected-product" id="selectedProduct" style="display: none;">
+                    <h3 id="selectedProductName"></h3>
+                    <p id="selectedProductPrice"></p>
+                    <p id="selectedProductCategory"></p>
+                </div>
+
+                <div class="form-group">
+                    <label>Quantity</label>
+                    <div class="quantity-control">
+                        <button class="quantity-btn quantity-btn-minus" onclick="changeQuantity(-1)">−</button>
+                        <span class="quantity-display" id="quantityDisplay">1</span>
+                        <button class="quantity-btn quantity-btn-plus" onclick="changeQuantity(1)">+</button>
+                    </div>
+                </div>
+
+                <div class="quantity-control" style="margin-bottom: 15px;">
+                    <label style="margin-right: 10px;">Manual Entry:</label>
+                    <input type="number" id="manualQuantity" min="1" value="1" style="width: 80px; padding: 8px; border: 2px solid #e0e0e0; border-radius: 8px;">
+                    <button class="btn btn-primary btn-small" onclick="setManualQuantity()">Set</button>
+                </div>
+
+                <button class="btn btn-success" onclick="addSale()">Add to Sales</button>
+
+                <div class="sales-summary" id="salesSummary">
+                    <div class="summary-item">
+                        <span>Items Sold:</span>
+                        <span id="totalItems">0</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Total Revenue:</span>
+                        <span id="totalRevenue">$0.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sales History Card -->
+            <div class="card" style="grid-column: span 2;">
+                <h2>Sales History</h2>
+                <div id="salesHistory" style="max-height: 300px; overflow-y: auto;">
+                    <div class="empty-state">
+                        <div>&#128202;</div>
+                        <p>No sales recorded yet.</p>
+                    </div>
+                </div>
+                <div class="total-section">
+                    <div>Total Sales</div>
+                    <div class="total-amount" id="grandTotal">$0.00</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Product Modal -->
+    <div class="modal" id="editModal">
+        <div class="modal-content">
+            <h2>Edit Product</h2>
+            <div class="form-group">
+                <label for="editProductName">Product Name</label>
+                <input type="text" id="editProductName">
+            </div>
+            <div class="form-group">
+                <label for="editProductPrice">Price ($)</label>
+                <input type="number" id="editProductPrice" step="0.01" min="0">
+            </div>
+            <div class="form-group">
+                <label for="editProductCategory">Category</label>
+                <input type="text" id="editProductCategory">
+            </div>
+            <div class="modal-actions">
+                <button class="btn btn-primary" onclick="saveProductEdit()">Save Changes</button>
+                <button class="btn btn-danger" onclick="closeModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Storage
+        let products = [];
+        let sales = [];
+        let currentQuantity = 1;
+        let editingProductId = null;
+
+        // Calculator state
+        let calcExpression = '';
+        let calcDisplay = '0';
+
+        // Product Management
+        function addProduct() {
+            const name = document.getElementById('productName').value.trim();
+            const price = parseFloat(document.getElementById('productPrice').value);
+            const category = document.getElementById('productCategory').value.trim();
+
+            if (!name || isNaN(price) || price < 0) {
+                alert('Please enter valid product information');
+                return;
+            }
+
+            const product = {
+                id: Date.now(),
+                name: name,
+                price: price,
+                category: category || 'Uncategorized'
+            };
+
+            products.push(product);
+            clearProductForm();
+            updateProductList();
+            updateProductSelect();
+            saveData();
+        }
+
+        function clearProductForm() {
+            document.getElementById('productName').value = '';
+            document.getElementById('productPrice').value = '';
+            document.getElementById('productCategory').value = '';
+        }
+
+        function removeProduct(id) {
+            if (confirm('Are you sure you want to remove this product?')) {
+                products = products.filter(p => p.id !== id);
+                updateProductList();
+                updateProductSelect();
+                saveData();
+            }
+        }
+
+        function editProduct(id) {
+            const product = products.find(p => p.id === id);
+            if (product) {
+                editingProductId = id;
+                document.getElementById('editProductName').value = product.name;
+                document.getElementById('editProductPrice').value = product.price;
+                document.getElementById('editProductCategory').value = product.category;
+                document.getElementById('editModal').classList.add('active');
+            }
+        }
+
+        function saveProductEdit() {
+            const name = document.getElementById('editProductName').value.trim();
+            const price = parseFloat(document.getElementById('editProductPrice').value);
+            const category = document.getElementById('editProductCategory').value.trim();
+
+            if (!name || isNaN(price) || price < 0) {
+                alert('Please enter valid product information');
+                return;
+            }
+
+            const product = products.find(p => p.id === editingProductId);
+            if (product) {
+                product.name = name;
+                product.price = price;
+                product.category = category || 'Uncategorized';
+            }
+
+            closeModal();
+            updateProductList();
+            updateProductSelect();
+            saveData();
+        }
+
+        function closeModal() {
+            document.getElementById('editModal').classList.remove('active');
+            editingProductId = null;
+        }
+
+        function updateProductList() {
+            const container = document.getElementById('productList');
+            
+            if (products.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div>&#128230;</div>
+                        <p>No products yet. Add your first product above!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = products.map(product => `
+                <div class="product-item">
+                    <h3>${product.name}</h3>
+                    <p>Price: $${product.price.toFixed(2)}</p>
+                    <p>Category: ${product.category}</p>
+                    <div class="product-actions">
+                        <button class="btn btn-primary btn-small" onclick="editProduct(${product.id})">Edit</button>
+                        <button class="btn btn-danger btn-small" onclick="removeProduct(${product.id})">Remove</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateProductSelect() {
+            const select = document.getElementById('productSelect');
+            select.innerHTML = '<option value="">Choose a product...</option>' +
+                products.map(p => `<option value="${p.id}">${p.name} - $${p.price.toFixed(2)}</option>`).join('');
+        }
+
+        // Sales Management
+        function selectProduct() {
+            const select = document.getElementById('productSelect');
+            const selectedId = parseInt(select.value);
+            const product = products.find(p => p.id === selectedId);
+            
+            if (product) {
+                document.getElementById('selectedProduct').style.display = 'block';
+                document.getElementById('selectedProductName').textContent = product.name;
+                document.getElementById('selectedProductPrice').textContent = `Price: $${product.price.toFixed(2)}`;
+                document.getElementById('selectedProductCategory').textContent = `Category: ${product.category}`;
+            } else {
+                document.getElementById('selectedProduct').style.display = 'none';
+            }
+        }
+
+        function changeQuantity(delta) {
+            currentQuantity = Math.max(1, currentQuantity + delta);
+            document.getElementById('quantityDisplay').textContent = currentQuantity;
+            document.getElementById('manualQuantity').value = currentQuantity;
+        }
+
+        function setManualQuantity() {
+            const input = document.getElementById('manualQuantity');
+            const value = parseInt(input.value);
+            if (value > 0) {
+                currentQuantity = value;
+                document.getElementById('quantityDisplay').textContent = currentQuantity;
+            }
+        }
+
+        function addSale() {
+            const select = document.getElementById('productSelect');
+            const selectedId = parseInt(select.value);
+            const product = products.find(p => p.id === selectedId);
+
+            if (!product) {
+                alert('Please select a product first');
+                return;
+            }
+
+            const sale = {
+                id: Date.now(),
+                productId: product.id,
+                productName: product.name,
+                price: product.price,
+                quantity: currentQuantity,
+                total: product.price * currentQuantity,
+                date: new Date().toLocaleString()
+            };
+
+            sales.push(sale);
+            currentQuantity = 1;
+            document.getElementById('quantityDisplay').textContent = 1;
+            document.getElementById('manualQuantity').value = 1;
+            select.value = '';
+            document.getElementById('selectedProduct').style.display = 'none';
+            
+            updateSalesHistory();
+            saveData();
+        }
+
+        function removeSale(id) {
+            if (confirm('Are you sure you want to remove this sale?')) {
+                sales = sales.filter(s => s.id !== id);
+                updateSalesHistory();
+                saveData();
+            }
+        }
+
+        function updateSalesHistory() {
+            const container = document.getElementById('salesHistory');
+            
+            if (sales.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div>&#128202;</div>
+                        <p>No sales recorded yet.</p>
+                    </div>
+                `;
+                document.getElementById('totalItems').textContent = '0';
+                document.getElementById('totalRevenue').textContent = '$0.00';
+                document.getElementById('grandTotal').textContent = '$0.00';
+                return;
+            }
+
+            const totalItems = sales.reduce((sum, s) => sum + s.quantity, 0);
+            const totalRevenue = sales.reduce((sum, s) => sum + s.total, 0);
+
+            document.getElementById('totalItems').textContent = totalItems;
+            document.getElementById('totalRevenue').textContent = '$' + totalRevenue.toFixed(2);
+            document.getElementById('grandTotal').textContent = '$' + totalRevenue.toFixed(2);
+
+            container.innerHTML = sales.slice().reverse().map(sale => `
+                <div class="product-item">
+                    <h3>${sale.productName}</h3>
+                    <p>Qty: ${sale.quantity} × $${sale.price.toFixed(2)} = $${sale.total.toFixed(2)}</p>
+                    <p style="font-size: 0.8rem; color: #999;">${sale.date}</p>
+                    <div class="product-actions">
+                        <button class="btn btn-danger btn-small" onclick="removeSale(${sale.id})">Remove</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Calculator Functions
+        function appendToCalc(value) {
+            if (calcDisplay === '0' && value !== '(' && value !== ')') {
+                calcDisplay = value;
+            } else {
+                calcDisplay += value;
+            }
+            document.getElementById('calcDisplay').textContent = calcDisplay;
+        }
+
+        function clearCalc() {
+            calcDisplay = '0';
+            document.getElementById('calcDisplay').textContent = calcDisplay;
+        }
+
+        function calculate() {
+            try {
+                let expression = calcDisplay
+                    .replace(/×/g, '*')
+                    .replace(/÷/g, '/')
+                    .replace(/−/g, '-');
+                
+                let result = eval(expression);
+                
+                if (isNaN(result) || !isFinite(result)) {
+                    document.getElementById('calcDisplay').textContent = 'Error';
+                    calcDisplay = '0';
+                } else {
+                    result = Math.round(result * 100) / 100;
+                    document.getElementById('calcDisplay').textContent = result;
+                    calcDisplay = result.toString();
+                }
+            } catch (e) {
+                document.getElementById('calcDisplay').textContent = 'Error';
+                calcDisplay = '0';
+            }
+        }
+
+        // Data Persistence
+        function saveData() {
+            localStorage.setItem('salesTrackerProducts', JSON.stringify(products));
+            localStorage.setItem('salesTrackerSales', JSON.stringify(sales));
+        }
+
+        function loadData() {
+            const savedProducts = localStorage.getItem('salesTrackerProducts');
+            const savedSales = localStorage.getItem('salesTrackerSales');
+            
+            if (savedProducts) products = JSON.parse(savedProducts);
+            if (savedSales) sales = JSON.parse(savedSales);
+            
+            updateProductList();
+            updateProductSelect();
+            updateSalesHistory();
+        }
+
+        // Initialize
+        loadData();
+
+        // Electron API Functions
+        async function saveToFile() {
+            if (window.electronAPI) {
+                const data = { products, sales };
+                const result = await window.electronAPI.saveData(data);
+                if (result.success) {
+                    alert('Data saved successfully to: ' + result.path);
+                }
+            } else {
+                // Fallback for browser
+                const data = { products, sales };
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'sales-data.json';
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+        }
+
+        async function loadFromFile() {
+            if (window.electronAPI) {
+                const result = await window.electronAPI.loadData();
+                if (result.success) {
+                    products = result.data.products || [];
+                    sales = result.data.sales || [];
+                    updateProductList();
+                    updateProductSelect();
+                    updateSalesHistory();
+                    saveData();
+                    alert('Data loaded successfully!');
+                }
+            } else {
+                // Fallback for browser
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.json';
+                input.onchange = async (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const text = await file.text();
+                        const data = JSON.parse(text);
+                        products = data.products || [];
+                        sales = data.sales || [];
+                        updateProductList();
+                        updateProductSelect();
+                        updateSalesHistory();
+                        saveData();
+                        alert('Data loaded successfully!');
+                    }
+                };
+                input.click();
+            }
+        }
+
+        async function exportToCSV() {
+            if (sales.length === 0) {
+                alert('No sales to export');
+                return;
+            }
+
+            if (window.electronAPI) {
+                const result = await window.electronAPI.exportCSV(sales);
+                if (result.success) {
+                    alert('CSV exported successfully to: ' + result.path);
+                }
+            } else {
+                // Fallback for browser
+                const headers = ['Date', 'Product', 'Quantity', 'Price', 'Total'];
+                const rows = sales.map(sale => [
+                    sale.date,
+                    sale.productName,
+                    sale.quantity,
+                    sale.price.toFixed(2),
+                    sale.total.toFixed(2)
+                ]);
+                const csvContent = [headers, ...rows].map(row => row.join(',')).join('\n');
+                const blob = new Blob([csvContent], { type: 'text/csv' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'sales-export.csv';
+                a.click();
+                URL.revokeObjectURL(url);
+            }
+        }
+    </script>
+</body>
+</html>

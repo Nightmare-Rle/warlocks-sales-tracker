@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0a0a">
+  <meta name="api-base" content="../api/index.php">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.svg">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <title>Warlocks Sales Tracker</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- ================= LOGIN ================= -->
+  <div id="login">
+    <div class="login-card">
+      <h1>WARLOCKS</h1>
+      <div class="sub">SALES <span class="gold">TRACKER</span> &middot; transparent na benta</div>
+      <form id="login-form">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input id="username" autocomplete="username" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input id="password" type="password" autocomplete="current-password" required>
+        </div>
+        <button class="btn btn-red btn-block" type="submit">LOGIN</button>
+      </form>
+      <p class="muted" style="text-align:center;margin-top:14px;font-size:.78rem;">
+        Public verify page: <a href="verify.html">verify.html</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- ================= APP ================= -->
+  <div id="app">
+    <div class="topbar">
+      <div class="brand">WARLOCKS <span>SALES</span></div>
+      <nav id="tabs">
+        <button data-view="dashboard" class="active">Dashboard</button>
+        <button data-view="pos">POS</button>
+        <button data-view="products">Products</button>
+        <button data-view="history">History</button>
+        <button data-view="transparency">Transparency</button>
+      </nav>
+      <div class="user">
+        <span id="whoami" class="muted"></span>
+        <span id="rolebadge" class="badge"></span>
+        <button class="btn btn-sm" id="logout">Logout</button>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- Dashboard -->
+      <section id="view-dashboard">
+        <div class="grid-3" style="margin-bottom:14px;">
+          <div class="card stat gold">
+            <h3>Sales ngayon</h3>
+            <div class="num" id="d-today">₱0</div>
+          </div>
+          <div class="card stat">
+            <h3>Resibo ngayon</h3>
+            <div class="num" id="d-count">0</div>
+          </div>
+          <div class="card stat red">
+            <h3>Aktibong produkto</h3>
+            <div class="num" id="d-products">0</div>
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <div class="card">
+            <h3>Cash Jar</h3>
+            <div class="jar">
+              <div class="neck"></div>
+              <div class="rim"></div>
+              <div class="fill" id="jar-fill" style="height:0%"></div>
+            </div>
+            <div class="jar-lbl" id="jar-lbl">₱0 / ₱0</div>
+          </div>
+          <div class="card" style="grid-column: span 2;">
+            <h3>Wholesale ngayon</h3>
+            <canvas id="day-chart" height="220" style="width:100%;"></canvas>
+            <p class="muted" id="chart-note" style="font-size:.8rem;margin-top:6px;"></p>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:14px;">
+          <h3>Pinakabagong anchor (transparency)</h3>
+          <div id="d-anchor" class="muted">Wala pang on-chain anchor.</div>
+        </div>
+      </section>
+
+      <!-- POS -->
+      <section id="view-pos" style="display:none;">
+        <div class="pos">
+          <div>
+            <div style="display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap;">
+              <input id="pos-search" placeholder="Search product..." style="flex:1;min-width:160px;">
+              <select id="pos-cat" style="max-width:160px;"><option value="">Lahat</option></select>
+            </div>
+            <div class="pos-list" id="pos-list"></div>
+          </div>
+          <div>
+            <div class="card" style="position:sticky;top:70px;">
+              <h3>Cart</h3>
+              <div id="cart-items"><p class="muted">Walang laman.</p></div>
+              <hr class="sep">
+              <div class="row" style="align-items:center;">
+                <span class="muted">TOTAL</span>
+                <span class="stat gold" id="cart-total" style="font-size:1.6rem;text-align:right;">₱0</span>
+              </div>
+              <button class="btn btn-gold btn-block" id="checkout" style="margin-top:12px;">CHECKOUT</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Products -->
+      <section id="view-products" style="display:none;">
+        <div class="grid-2">
+          <div class="card">
+            <h3>Add product</h3>
+            <div class="form-group"><label>Name</label><input id="p-name" placeholder="e.g. PS5 GAMES"></div>
+            <div class="row">
+              <div class="form-group"><label>Price (PHP)</label><input id="p-price" type="number" min="0" step="0.01" placeholder="20.00"></div>
+              <div class="form-group"><label>Category</label><input id="p-cat" placeholder="MERCH / GAMES"></div>
+            </div>
+            <button class="btn btn-red btn-block" id="p-add">ADD PRODUCT</button>
+          </div>
+          <div class="card">
+            <h3>Inventory</h3>
+            <div id="p-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- History -->
+      <section id="view-history" style="display:none;">
+        <div class="card">
+          <div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;">
+            <input id="h-date" type="date" style="max-width:200px;">
+            <button class="btn btn-sm" id="h-refresh">Load</button>
+          </div>
+          <div id="h-list"><p class="muted">Pumili ng petsa.</p></div>
+        </div>
+      </section>
+
+      <!-- Transparency -->
+      <section id="view-transparency" style="display:none;">
+        <div class="notice">
+          <strong>Paano gumagana ang transparency:</strong> bawat resibo ay may unique
+          <code>SHA-256 hash</code>. Sa pagtatapos ng araw, pinagsasama-sama ang lahat ng hash
+          sa isang <b>Merkle root</b> at ito ang naka-anchor sa blockchain (Polygon/BNB).
+          Kahit sino puwedeng i-verify ang isang resibo dito — kaya hindi na posibleng baguhin
+          ang lumang benta nang hindi napapansin.
+        </div>
+        <div class="grid-2">
+          <div class="card">
+            <h3>I-verify ang resibo</h3>
+            <div class="form-group"><label>Receipt no. (S-YYYYMMDD-XXXX) o 64-char hash</label>
+              <input id="verify-input" placeholder="S-20260921-0001"></div>
+            <button class="btn btn-gold btn-block" id="verify-btn">VERIFY</button>
+            <div id="verify-result" style="margin-top:14px;"></div>
+          </div>
+          <div class="card">
+            <h3>On-chain anchor</h3>
+            <div id="anchor-info" class="muted">INIload...</div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+  <script src="js/app.js"></script>
+</body>
+</html>

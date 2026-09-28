@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0a0a0a">
+  <meta name="api-base" content="../api/index.php">
+  <link rel="icon" href="icon.svg">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <title>Warlocks - Verify Resibo</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container" style="max-width:760px;padding-top:30px;">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+        <h1 style="color:var(--red);font-size:1.4rem;">WARLOCKS <span style="color:var(--gold);">VERIFY</span></h1>
+        <a href="index.html" class="muted" style="font-size:.85rem;">&larr; Cashier login</a>
+      </div>
+      <p class="muted" style="margin-bottom:16px;font-size:.9rem;">
+        I-verify dito kung tunay at hindi binago ang isang resibo. Bawat benta ay may
+        <code>SHA-256 hash</code>; sa pagtatapos ng araw naka-anchor ang kabuuang
+        <b>Merkle root</b> sa blockchain — kaya siguradong hindi naibago ang rekord.
+      </p>
+      <div style="display:flex;gap:8px;">
+        <input id="verify-input" placeholder="S-20260921-0001 o 64-char hash" style="flex:1;">
+        <button class="btn btn-gold" id="verify-btn">VERIFY</button>
+      </div>
+      <div id="verify-result" style="margin-top:16px;"></div>
+    </div>
+
+    <div class="card" style="margin-top:14px;">
+      <h3>Pinakabagong on-chain anchor</h3>
+      <div id="anchor-info" class="muted">INIload...</div>
+    </div>
+  </div>
+  <script src="js/verify.js"></script>
+</body>
+</html>

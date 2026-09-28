@@ -1,0 +1,11 @@
+# Warlocks Sales Tracker - hardening for shared hosting (Apache)
+Options -Indexes
+
+# Block direct browser access to config.php (defence in depth even if
+# PHP mis-parses it as plain text).
+<Files "config.php">
+  Require all denied
+</Files>
+
+# Never serve setup or signer files once deployed (matches anywhere below).
+RedirectMatch 403 /(setup|signer)/
